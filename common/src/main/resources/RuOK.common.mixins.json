@@ -10,18 +10,15 @@
     "minecraft.BiomeEffectSoundPlayerMixin",
     "minecraft.ClientPlayNetworkHandlerMixin",
     "minecraft.ClientWorldMixin",
-    "minecraft.ExplosionEmitterParticleFactoryMixin",
     "minecraft.ItemEntityRendererMixin",
     "minecraft.MinecraftMixin",
     "minecraft.ParticleManagerMixin",
-    "minecraft.TntMinecartEntityRendererMixin",
+    "minecraft.TextureAtlasMixin",
     "minecraft.WorldRendererMixin",
-    "minecraft.accessor.MinecraftAccessor",
     "minecraft.gui.ChatHudMixin",
     "minecraft.gui.OptionsScreenMixin",
     "sodium.SodiumGUIMixin"
   ],
   "mixins": [
-    "minecraft.ExplosionS2CPacketMixin"
   ]
 }

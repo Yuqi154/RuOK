@@ -3,9 +3,10 @@ package team.teampotato.ruok.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import team.teampotato.ruok.RuOKMod;
-import team.teampotato.ruok.gui.vanilla.mode.BlockBreakParticleType;
-import team.teampotato.ruok.gui.vanilla.mode.QualityType;
-import team.teampotato.ruok.gui.vanilla.mode.WeatherType;
+import team.teampotato.ruok.gui.modern.GuiViewType;
+import team.teampotato.ruok.gui.modern.mode.BlockBreakParticleType;
+import team.teampotato.ruok.gui.modern.mode.QualityType;
+import team.teampotato.ruok.gui.modern.mode.WeatherType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,8 @@ import java.util.List;
 public class RuOKConfig implements ConfigData {
     public boolean onCull = true;
     public int MaxEntityEntities = 128;
-    public int EntitiesDistance = 64;
     public QualityType qualityModes = QualityType.NORMAL;
     public WeatherType RenderWeather = WeatherType.NORMAL;
-    public boolean RenderTNTExplosions = true;
     public boolean FastItemRender = false;
     public boolean RenderDisplayItem = false;
     public List<String> blackListedEntities = new ArrayList<>();
@@ -47,8 +46,16 @@ public class RuOKConfig implements ConfigData {
     public int GuiX = 0;
     public int GuiY = 0;
     public boolean EntityRender = true;
-    public boolean UseVanillaGui = false;
+    public boolean UseAui = false;
     public boolean DeBug = false;
     public boolean TextBackground = false;
-
+    public boolean TextureAnimatedSprites = true;
+    public boolean SoundDevicesMonitor = false;
+    public boolean SetParticleMaxAge = false;
+    public int ParticleMaxAge = 1;
+    public GuiViewType GuiViewMode = GuiViewType.NULL;
+    public int EntityCullFov = 120;
+    public int MinDistance = 5;
+    public int EntityDistance = 64;
+    public boolean TickPerformance = false;
 }

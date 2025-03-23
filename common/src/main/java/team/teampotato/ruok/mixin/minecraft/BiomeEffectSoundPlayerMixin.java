@@ -17,6 +17,8 @@ public abstract class BiomeEffectSoundPlayerMixin {
     @Shadow
     private Optional<AmbientMoodSettings> moodSettings;
 
+    @Shadow private float moodiness;
+
     @Inject(
             method = "tick",
             at = @At(
@@ -30,6 +32,7 @@ public abstract class BiomeEffectSoundPlayerMixin {
         if(!RuOK.get().Mood && this.moodSettings.isPresent()) {
             // 如果想彻底禁用 MOOD 声音逻辑
             this.moodSettings = Optional.empty(); // 禁用任何音效配置
+            this.moodiness = 0;
             ci.cancel(); // 阻止后续逻辑执行
         }
     }

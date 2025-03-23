@@ -10,9 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import team.teampotato.ruok.config.RuOK;
+import team.teampotato.ruok.util.EntityUtils;
 import team.teampotato.ruok.util.GameSystemMonitor;
-import team.teampotato.ruok.util.StartTime;
-import team.teampotato.ruok.util.render.TextRender;
+import team.teampotato.ruok.util.clazz.StartTime;
+import team.teampotato.ruok.util.render.RenderUtil;
 
 
 @Mixin(value = Minecraft.class)
@@ -29,8 +30,9 @@ public class MinecraftMixin {
     @Inject(method = "tick", at = @At("RETURN"))
     private void onTick(CallbackInfo ci){
         if(GameSystemMonitor.getInitState()) {//添加状态,宣布有完全加载,防止出现兼容性导致线程卡死
+            RenderUtil.setTickRun(true);
             GameSystemMonitor.run();
-            TextRender.refInfo();
+            EntityUtils.refViewEntity();
         }
 
     }
@@ -43,6 +45,16 @@ public class MinecraftMixin {
             )
     )
     private boolean onRender(MetricsRecorder instance, Operation<Boolean> original) {
-        return RuOK.get().GuiGPU || instance.isRecording();
+        if(RuOK.get().GuiGPU) return true;
+        return original.call(instance);
     }
+
+    @WrapOperation(
+            method = "runTick",
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;limitDisplayFPS(I)V")
+    )
+    private void onRender(int fps, Operation<Void> original) {
+        RenderUtil.setMaxFps(fps,original);
+    }
+
 }

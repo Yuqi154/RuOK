@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import team.teampotato.ruok.config.RuOK;
+import team.teampotato.ruok.util.render.TextRender;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -31,6 +32,12 @@ public class GameSystemMonitor {
         return GameSystemMonitor.initState;
     }
 
+    public static void onTick() {
+        if(GameSystemMonitor.getInitState()) {//添加状态,宣布有完全加载,防止出现兼容性导致线程卡死
+            GameSystemMonitor.run();
+            if(RuOK.get().onGui) TextRender.refInfo();
+        }
+    }
     public static void runFPSMonitor() {
         if(RuOK.get().FPSMonitor) {
             tickCounter++;
@@ -75,11 +82,14 @@ public class GameSystemMonitor {
             runFPSMonitor();
         }
 
-        delay++;
-        if (delay>8) {
-            runSoundDevicesMonitor(mc.getSoundManager());
-            delay=0;
+        if(RuOK.get().SoundDevicesMonitor) {
+            delay++;
+            if (delay>8) {
+                runSoundDevicesMonitor(mc.getSoundManager());
+                delay=0;
+            }
         }
+
     }
 
     private static void runSoundDevicesMonitor(SoundManager sm) {

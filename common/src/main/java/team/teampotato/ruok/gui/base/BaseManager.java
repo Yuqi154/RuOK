@@ -7,7 +7,6 @@ import team.teampotato.ruok.config.RuOK;
 import team.teampotato.ruok.util.ModLoadState;
 import team.teampotato.ruok.util.Quality;
 import team.teampotato.ruok.util.ToastUtil;
-import team.teampotato.ruok.util.render.EntityRender;
 import team.teampotato.ruok.vellamo.Score;
 
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ public class BaseManager {
                 (str,integer) -> {
                     RuOK.get().MaxEntityEntities = integer;
                     RuOK.save();
-                    EntityRender.reloadRenderEntity();
                 },
                 (def) -> RuOK.get().MaxEntityEntities,
                 BaseUtil.Type.INT,
@@ -69,10 +67,10 @@ public class BaseManager {
         BaseManager.getBinds().add(new Base<>(
                 "ruok.quality.distance",
                 (str,integer) -> {
-                    RuOK.get().EntitiesDistance = integer;
+                    RuOK.get().EntityDistance = integer;
                     RuOK.save();
                 },
-                (def) -> RuOK.get().EntitiesDistance,
+                (def) -> RuOK.get().EntityDistance,
                 BaseUtil.Type.INT,
                 BaseUtil.Group.MAIN,
                 1,
@@ -180,7 +178,7 @@ public class BaseManager {
                 },
                 (options) -> RuOK.get().Particle,
                 BaseUtil.Type.BOOLEAN,
-                BaseUtil.Group.OTHER,
+                BaseUtil.Group.MAIN,
                 11
         ));
         BaseManager.getBinds().add(new Base<>(
@@ -209,7 +207,7 @@ public class BaseManager {
                 },
                 (def) -> RuOK.get().MaxParticleDistance,
                 BaseUtil.Type.INT,
-                BaseUtil.Group.OTHER,
+                BaseUtil.Group.MAIN,
                 1,
                 1,
                 512,
@@ -399,6 +397,96 @@ public class BaseManager {
                 BaseUtil.Type.BOOLEAN,
                 BaseUtil.Group.HUD,
                 28
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.texture.animated",
+                (options, value) -> {
+                    RuOK.get().TextureAnimatedSprites = value;
+                    RuOK.save();
+                },
+                (options) -> RuOK.get().TextureAnimatedSprites,
+                BaseUtil.Type.BOOLEAN,
+                BaseUtil.Group.OTHER,
+                29
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.sound.devices.monitor",
+                (options, value) -> {
+                    RuOK.get().SoundDevicesMonitor = value;
+                    RuOK.save();
+                },
+                (options) -> RuOK.get().SoundDevicesMonitor,
+                BaseUtil.Type.BOOLEAN,
+                BaseUtil.Group.OTHER,
+                30
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.particle.set.maxage",
+                (options, value) -> {
+                    RuOK.get().SetParticleMaxAge = value;
+                    RuOK.save();
+                },
+                (options) -> RuOK.get().SetParticleMaxAge,
+                BaseUtil.Type.BOOLEAN,
+                BaseUtil.Group.MAIN,
+                31
+        ));
+
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.particle.set.maxage.int",
+                (str,integer) -> {
+                    RuOK.get().ParticleMaxAge = integer;
+                    RuOK.save();
+                },
+                (def) -> RuOK.get().ParticleMaxAge,
+                BaseUtil.Type.INT,
+                BaseUtil.Group.MAIN,
+                1,
+                1,
+                100,
+                "ruok.quality.particle.set.mode.divided.format",
+                32
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.entity.cull.fov",
+                (str,integer) -> {
+                    RuOK.get().EntityCullFov = integer;
+                    RuOK.save();
+                },
+                (def) -> RuOK.get().EntityCullFov,
+                BaseUtil.Type.INT,
+                BaseUtil.Group.MAIN,
+                1,
+                30,
+                360,
+                "ruok.quality.entity.cull.fov.format",
+                33
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.entity.cull.min.distance",
+                (str,integer) -> {
+                    RuOK.get().MinDistance = integer;
+                    RuOK.save();
+                },
+                (def) -> RuOK.get().MinDistance,
+                BaseUtil.Type.INT,
+                BaseUtil.Group.MAIN,
+                1,
+                1,
+                30,
+                "ruok.quality.block.options",
+                35-1
+        ));
+        BaseManager.getBinds().add(new Base<>(
+                "ruok.quality.render.performance",
+                (options, value) -> {
+                    RuOK.get().TickPerformance = value;
+                    RuOK.save();
+                },
+                (options) -> RuOK.get().TickPerformance,
+                BaseUtil.Type.BOOLEAN,
+                BaseUtil.Group.MAIN,
+                35
         ));
 
     }

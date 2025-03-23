@@ -6,9 +6,9 @@ import me.jellysquid.mods.sodium.client.gui.options.OptionImpl;
 import me.jellysquid.mods.sodium.client.gui.options.control.TickBoxControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import team.teampotato.ruok.gui.modern.screens.ConfigHUDScreen;
 import team.teampotato.ruok.gui.sodium.storage.OptionsStorage;
 import team.teampotato.ruok.gui.sodium.storage.RuOKGameOptions;
-import team.teampotato.ruok.gui.vanilla.screen.ConfigHUDScreen;
 
 public class OtherOptions {
     private static final Minecraft mc = Minecraft.getInstance();

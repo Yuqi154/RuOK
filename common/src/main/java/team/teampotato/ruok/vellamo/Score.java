@@ -1,12 +1,12 @@
 package team.teampotato.ruok.vellamo;
 
 import com.sun.management.OperatingSystemMXBean;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import team.teampotato.ruok.config.RuOK;
-import team.teampotato.ruok.gui.vanilla.mode.QualityType;
-import team.teampotato.ruok.mixin.minecraft.accessor.MinecraftAccessor;
+import team.teampotato.ruok.gui.modern.mode.QualityType;
 import team.teampotato.ruok.util.Quality;
 import team.teampotato.ruok.util.ToastUtil;
 
@@ -31,7 +31,7 @@ public class Score {
     @Contract(pure = true)
     public static void runVellamo() {
         //获取FPS
-        int fps = MinecraftAccessor.getFPS();
+        int fps = Minecraft.getInstance().getFps();
         //获取启动时间
         double time = RuOK.get().startTime;
         double score = 0.5 * (100 - cpu) + 0.4 * (100 - ram) + 0.1 * fps + 0.1 * (1000 / time);

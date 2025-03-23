@@ -10,8 +10,8 @@ import net.minecraft.world.entity.monster.Ghast;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import team.teampotato.ruok.config.RuOK;
+import team.teampotato.ruok.util.EntityUtils;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,24 +19,11 @@ import java.util.Optional;
 public class EntityRender {
     private static final HashSet<EntityType<?>> blackEntityListCache = new HashSet<>();
     private static final HashSet<EntityType<?>> whiteEntityListCache = new HashSet<>();
-    private static int maxRenderedEntities; // 最大渲染生物数量
-    private static double[] closestDistances; // 记录最近生物的距离
-    private static Entity[] closestEntities; // 记录最近生物
     private static final Minecraft mc = Minecraft.getInstance();
 
 
     static {
         initConfigList();
-        initializeArrays();
-    }
-
-    // 初始化数组
-    private static void initializeArrays() {
-        maxRenderedEntities = RuOK.get().MaxEntityEntities; // 从配置中获取最大渲染生物数量
-        closestDistances = new double[maxRenderedEntities];
-        closestEntities = new Entity[maxRenderedEntities];
-        Arrays.fill(closestDistances, Double.MAX_VALUE);
-        Arrays.fill(closestEntities, null);
     }
 
     // 初始化生物列表
@@ -72,87 +59,65 @@ public class EntityRender {
     public static boolean isWhitelisted(@NotNull Entity entity) {
         return whiteEntityListCache.contains(entity.getType()); // 返回 true 表示在白名单中 - 添加渲染
     }
-
-    // 重新加载方法，更新最大渲染生物数量
-    public static void reloadRenderEntity() {
-        maxRenderedEntities = RuOK.get().MaxEntityEntities;
-        initializeArrays();
-    }
-
     public static void entityCull(Entity entity, CallbackInfo ci) {
-        // 剔除功能,如果未开启就关闭
-        if(!RuOK.get().EntityRender) {
+        if (!RuOK.get().onCull || !RuOK.get().EntityRender) {
+            return;
+        }
+        if (entity.equals(mc.player) || mc.level == null || mc.player == null) {
+            return;
+        }
+
+        double minDistance = RuOK.get().MinDistance; // 获取最小剔除距离 (5 格)
+        double entityDistance = Math.sqrt(entity.distanceToSqr(mc.player)); // 计算实体到玩家的距离
+
+        // **保护距离内的生物不会被剔除**
+        if (entityDistance <= minDistance) {
+            return; // 生物距离玩家过近，不剔除
+        }
+
+        // 获取视野内的所有生物，仅获取一次，避免重复计算
+        List<Entity> visibleEntities = EntityUtils.getVisibleEntities();
+        int maxEntities = RuOK.get().MaxEntityEntities;
+
+        // 白名单 & Boss 优先保留
+        if (isWhitelisted(entity) || isBossEntity(entity)) return;
+
+        // 黑名单直接剔除
+        if (isBlacklisted(entity)) {
             ci.cancel();
             return;
         }
-        if(!RuOK.get().onCull) return;
-        if (mc.level != null && mc.player != null) {
-            double distanceToPlayer = entity.distanceToSqr(mc.player);
 
-            // 白名单优先：如果实体在白名单中，则保留渲染
-            if (isWhitelisted(entity)) {
-                return;
-            }
-            // 如果有原版BOSS，则继续渲染
-            if (isBossEntity(entity)) {
-                return;
-            }
+        // 如果实体不在视野内，则剔除
+        if (!visibleEntities.contains(entity)) {
+            ci.cancel();
+            return;
+        }
 
-            // 黑名单检查：如果实体在黑名单中，则取消渲染
-            if (isBlacklisted(entity)) {
-                ci.cancel();
-                return;
-            }
+        // **当生物超过 maxEntities 时，优先保留最近的 maxEntities 个**
+        if (visibleEntities.size() > maxEntities) {
+            // **寻找第 maxEntities 近的生物**
+            double maxAllowedDistance = visibleEntities.stream()
+                    .mapToDouble(e -> e.distanceToSqr(mc.player))
+                    .sorted()
+                    .limit(maxEntities)
+                    .max()
+                    .orElse(Double.MAX_VALUE); // 允许的最大距离
 
-            // 检查是否在最近的生物列表中
-            boolean inClosestEntities = updateClosestEntities(entity, distanceToPlayer);
-
-            // 如果实体距离玩家超过指定的距离或不在最近的生物列表中，则取消渲染
-            if (distanceToPlayer > RuOK.get().EntitiesDistance * RuOK.get().EntitiesDistance || !inClosestEntities) {
+            // **如果当前实体比第 `maxEntities` 远的那个更远，则剔除**
+            if (entity.distanceToSqr(mc.player) > maxAllowedDistance) {
                 ci.cancel();
             }
         }
     }
 
 
-    private static boolean updateClosestEntities(Entity entity, double distanceToPlayer) {
-        int farthestIndex = -1;
-        double maxDistance = -1;
 
-        // 检查并移除失效的实体
-        for (int i = 0; i < maxRenderedEntities; i++) {
-            if (closestEntities[i] != null && !closestEntities[i].isAlive()) {
-                closestEntities[i] = null;
-                closestDistances[i] = Double.MAX_VALUE;
-            }
-        }
-
-        // 检查实体是否已经在最近生物列表中
-        for (int i = 0; i < maxRenderedEntities; i++) {
-            if (closestEntities[i] == entity) {
-                // 如果实体已经在列表中，更新距离
-                closestDistances[i] = distanceToPlayer;
-                return true;
-            }
-            if (closestEntities[i] == null || closestDistances[i] > maxDistance) {
-                farthestIndex = i;
-                maxDistance = closestDistances[i];
-            }
-        }
-
-        // 尝试将实体加入列表
-        if (farthestIndex != -1 && (closestEntities[farthestIndex] == null || distanceToPlayer < maxDistance)) {
-            closestEntities[farthestIndex] = entity;
-            closestDistances[farthestIndex] = distanceToPlayer;
-            return true;
-        }
-
-        return false; // 如果列表已满且没有更近的位置
-    }
-
+    /**
+     * 判断是否是 Boss 实体
+     */
     private static boolean isBossEntity(@NotNull Entity entity) {
         return entity instanceof Ghast || entity instanceof EnderDragon;
     }
-
 
 }

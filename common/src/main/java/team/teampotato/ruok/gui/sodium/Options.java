@@ -13,11 +13,11 @@ import team.teampotato.ruok.gui.base.Base;
 import team.teampotato.ruok.gui.base.BaseManager;
 import team.teampotato.ruok.gui.base.BaseUtil;
 import team.teampotato.ruok.gui.base.compat.SodiumCompat;
+import team.teampotato.ruok.gui.modern.mode.BlockBreakParticleType;
+import team.teampotato.ruok.gui.modern.mode.QualityType;
+import team.teampotato.ruok.gui.modern.mode.WeatherType;
 import team.teampotato.ruok.gui.sodium.storage.OptionsStorage;
 import team.teampotato.ruok.gui.sodium.storage.RuOKGameOptions;
-import team.teampotato.ruok.gui.vanilla.mode.BlockBreakParticleType;
-import team.teampotato.ruok.gui.vanilla.mode.QualityType;
-import team.teampotato.ruok.gui.vanilla.mode.WeatherType;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -5,9 +5,9 @@ import net.minecraft.client.GraphicsStatus;
 import net.minecraft.client.ParticleStatus;
 import org.jetbrains.annotations.NotNull;
 import team.teampotato.ruok.config.RuOK;
-import team.teampotato.ruok.gui.vanilla.mode.BlockBreakParticleType;
-import team.teampotato.ruok.gui.vanilla.mode.QualityType;
-import team.teampotato.ruok.gui.vanilla.mode.WeatherType;
+import team.teampotato.ruok.gui.modern.mode.BlockBreakParticleType;
+import team.teampotato.ruok.gui.modern.mode.QualityType;
+import team.teampotato.ruok.gui.modern.mode.WeatherType;
 
 import java.util.EnumMap;
 
@@ -39,7 +39,7 @@ public class Quality {
         RuOptions.setCloudRenderMode(settings.CloudStatus);
         RuOptions.setEntityShadows(settings.entityShadows);
         RuOK.get().MaxEntityEntities = settings.maxEntityEntities;
-        RuOK.get().EntitiesDistance = settings.entitiesDistance;
+        RuOK.get().EntityDistance = settings.entitiesDistance;
         RuOK.get().RenderWeather = settings.weather;
         RuOK.get().BlockBreakParticleMode = settings.blockBreakParticleType;
         RuOK.get().MaxParticleDistance = settings.maxParticleDistance;
